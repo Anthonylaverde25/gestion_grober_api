@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ArticleSeeder::class,
             MachineSeeder::class,
             UserSeeder::class,
+            ExtractionSeeder::class,
         ]);
     }
 }
