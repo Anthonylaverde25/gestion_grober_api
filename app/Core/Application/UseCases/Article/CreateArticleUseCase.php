@@ -18,7 +18,8 @@ class CreateArticleUseCase
         $article = Article::create(
             (string) Str::uuid(),
             $request->companyId,
-            $request->name
+            $request->name,
+            $request->clientId
         );
 
         $this->articleRepository->save($article);

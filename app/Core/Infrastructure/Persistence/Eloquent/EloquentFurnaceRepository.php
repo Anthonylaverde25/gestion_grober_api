@@ -26,7 +26,7 @@ class EloquentFurnaceRepository implements FurnaceRepositoryInterface
     public function findByCompany(string $companyId): array
     {
         return EloquentFurnace::where('company_id', $companyId)
-            ->with('machines')
+            ->with(['machines.currentArticle', 'machines.currentCampaign.client'])
             ->get()
             ->map(fn($item) => FurnaceMapper::toDomain($item))
             ->toArray();

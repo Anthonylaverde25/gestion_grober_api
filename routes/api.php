@@ -9,6 +9,9 @@ use App\Http\Controllers\V1\FurnaceController;
 use App\Http\Controllers\V1\MachineController;
 use App\Http\Controllers\V1\ExtractionController;
 use App\Http\Controllers\V1\AuthController;
+use App\Http\Controllers\V1\ClientController;
+use App\Http\Controllers\V1\CampaignController;
+use App\Http\Controllers\V1\LineYieldController;
 
 use App\Http\Resources\V1\UserResource;
 use App\Core\Infrastructure\Persistence\Eloquent\Mappers\UserMapper;
@@ -34,5 +37,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('machines/{machineId}/current-article', [MachineController::class, 'changeCurrentArticle']);
         Route::post('extractions', [ExtractionController::class, 'store']);
         Route::get('machines/{machineId}/extractions/history', [ExtractionController::class, 'history']);
+        
+        Route::get('clients', [ClientController::class, 'index']);
+        Route::post('clients', [ClientController::class, 'store']);
+        Route::get('campaigns', [CampaignController::class, 'index']);
+        Route::post('campaigns/start', [CampaignController::class, 'start']);
+        Route::post('campaigns/{campaignId}/finish', [CampaignController::class, 'finish']);
+        Route::get('campaigns/{id}', [CampaignController::class, 'show']);
+        Route::post('line-yields', [LineYieldController::class, 'store']);
+        Route::get('campaigns/{campaignId}/line-yields/history', [LineYieldController::class, 'history']);
+        Route::get('machines/{machineId}/line-yields/history', [LineYieldController::class, 'machineHistory']);
     });
 });

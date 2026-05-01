@@ -19,6 +19,10 @@ class MachineResource extends JsonResource
             ],
             'name' => $this->getName(),
             'status' => $this->getStatus(),
+            'current_campaign' => $this->getCurrentCampaignId() ? [
+                'id' => $this->getCurrentCampaignId(),
+                'client_name' => $this->getCurrentClientName() ?? 'N/A',
+            ] : null,
         ];
     }
 }

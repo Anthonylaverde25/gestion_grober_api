@@ -19,10 +19,10 @@ class FurnaceController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $companyId = $request->query('company_id');
+        $companyId = $this->activeCompanyId();
 
         if (!$companyId) {
-            return response()->json(['message' => 'El company_id es requerido'], 400);
+            return response()->json(['message' => 'Active company context is required'], 400);
         }
 
         $furnaces = $this->listFurnacesUseCase->execute($companyId);
@@ -34,15 +34,22 @@ class FurnaceController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $companyId = $this->activeCompanyId();
+
+        if (!$companyId) {
+            return response()->json(['message' => 'Active company context is required'], 400);
+        }
+
         $request->validate([
             'name' => 'required|string|max:100',
-            'company_id' => 'required|uuid',
             'glass_type_id' => 'required|integer',
             'max_capacity_tons' => 'required|numeric|min:0.1'
         ]);
 
-        $dto = CreateFurnaceDTO::fromRequest($request->all());
+        $data = $request->all();
+        $data['company_id'] = $companyId;
 
+        $dto = CreateFurnaceDTO::fromRequest($data);
         $furnace = $this->createFurnaceUseCase->execute($dto);
 
         return response()->json([

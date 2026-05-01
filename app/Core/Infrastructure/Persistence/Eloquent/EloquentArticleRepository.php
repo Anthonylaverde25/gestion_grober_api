@@ -11,13 +11,13 @@ class EloquentArticleRepository implements ArticleRepositoryInterface
 {
     public function findById(string $id): ?DomainArticle
     {
-        $eloquent = EloquentArticle::find($id);
+        $eloquent = EloquentArticle::with('client')->find($id);
         return $eloquent ? ArticleMapper::toDomain($eloquent) : null;
     }
 
     public function findByCompanyId(string $companyId): array
     {
-        $articles = EloquentArticle::where('company_id', $companyId)->get();
+        $articles = EloquentArticle::with('client')->where('company_id', $companyId)->get();
         return $articles->map(fn($article) => ArticleMapper::toDomain($article))->toArray();
     }
 

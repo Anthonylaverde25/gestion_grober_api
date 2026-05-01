@@ -13,7 +13,9 @@ class Machine
         private ?string $currentArticleId,
         private ?string $currentArticleName,
         private string $name,
-        private string $status = 'operational'
+        private string $status = 'operational',
+        private ?string $currentCampaignId = null,
+        private ?string $currentClientName = null
     ) {}
 
     public static function create(
@@ -23,7 +25,9 @@ class Machine
         ?string $currentArticleId,
         string $name,
         string $status = 'operational',
-        ?string $currentArticleName = null
+        ?string $currentArticleName = null,
+        ?string $currentCampaignId = null,
+        ?string $currentClientName = null
     ): self {
         if (empty(trim($name))) {
             throw new InvalidArgumentException('El nombre de la máquina no puede estar vacío.');
@@ -31,7 +35,7 @@ class Machine
 
         self::assertValidStatus($status);
 
-        return new self($id, $companyId, $furnaceId, $currentArticleId, $currentArticleName, $name, $status);
+        return new self($id, $companyId, $furnaceId, $currentArticleId, $currentArticleName, $name, $status, $currentCampaignId, $currentClientName);
     }
 
     public static function reconstitute(
@@ -41,9 +45,11 @@ class Machine
         ?string $currentArticleId,
         string $name,
         string $status = 'operational',
-        ?string $currentArticleName = null
+        ?string $currentArticleName = null,
+        ?string $currentCampaignId = null,
+        ?string $currentClientName = null
     ): self {
-        return new self($id, $companyId, $furnaceId, $currentArticleId, $currentArticleName, $name, $status);
+        return new self($id, $companyId, $furnaceId, $currentArticleId, $currentArticleName, $name, $status, $currentCampaignId, $currentClientName);
     }
 
     public function getId(): string
@@ -81,6 +87,16 @@ class Machine
         return $this->status;
     }
 
+    public function getCurrentCampaignId(): ?string
+    {
+        return $this->currentCampaignId;
+    }
+
+    public function getCurrentClientName(): ?string
+    {
+        return $this->currentClientName;
+    }
+
     public function updateStatus(string $newStatus): void
     {
         self::assertValidStatus($newStatus);
@@ -95,6 +111,19 @@ class Machine
     public function clearCurrentArticle(): void
     {
         $this->currentArticleId = null;
+    }
+
+    public function lockWithCampaign(string $campaignId): void
+    {
+        if ($this->currentCampaignId !== null && $this->currentCampaignId !== $campaignId) {
+            throw new InvalidArgumentException("La máquina ya está bloqueada por otra campaña: {$this->currentCampaignId}");
+        }
+        $this->currentCampaignId = $campaignId;
+    }
+
+    public function releaseCampaign(): void
+    {
+        $this->currentCampaignId = null;
     }
 
     private static function assertValidStatus(string $status): void

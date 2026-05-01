@@ -11,7 +11,11 @@ class EloquentMachineRepository implements MachineRepositoryInterface
 {
     public function findById(string $id): ?DomainMachine
     {
-        $eloquent = EloquentMachine::with('currentArticle')->find($id);
+        $eloquent = EloquentMachine::with([
+            'currentArticle', 
+            'currentCampaign.article', 
+            'currentCampaign.client'
+        ])->find($id);
 
         return $eloquent ? MachineMapper::toDomain($eloquent) : null;
     }
@@ -26,7 +30,12 @@ class EloquentMachineRepository implements MachineRepositoryInterface
 
     public function findByCompany(string $companyId): array
     {
-        return EloquentMachine::with('currentArticle')->where('company_id', $companyId)
+        return EloquentMachine::with([
+            'currentArticle', 
+            'currentCampaign.article', 
+            'currentCampaign.client'
+        ])
+            ->where('company_id', $companyId)
             ->get()
             ->map(fn($item) => MachineMapper::toDomain($item))
             ->toArray();
@@ -34,7 +43,12 @@ class EloquentMachineRepository implements MachineRepositoryInterface
 
     public function findByFurnace(string $furnaceId): array
     {
-        return EloquentMachine::with('currentArticle')->where('furnace_id', $furnaceId)
+        return EloquentMachine::with([
+            'currentArticle', 
+            'currentCampaign.article', 
+            'currentCampaign.client'
+        ])
+            ->where('furnace_id', $furnaceId)
             ->get()
             ->map(fn($item) => MachineMapper::toDomain($item))
             ->toArray();

@@ -6,6 +6,7 @@ class CreateArticleRequest
 {
     public function __construct(
         public string $companyId,
-        public string $name
+        public string $name,
+        public ?string $clientId = null
     ) {}
 }

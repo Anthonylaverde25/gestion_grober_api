@@ -13,11 +13,16 @@ class Article extends Model
 
     protected $table = 'articles';
 
-    protected $fillable = ['company_id', 'name'];
+    protected $fillable = ['company_id', 'client_id', 'name'];
 
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
     }
 
     public function currentMachines()

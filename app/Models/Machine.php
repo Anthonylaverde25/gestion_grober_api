@@ -11,7 +11,7 @@ class Machine extends Model
 {
     use HasUuids, SoftDeletes, HasActiveCompany;
 
-    protected $fillable = ['company_id', 'furnace_id', 'current_article_id', 'name', 'current_status'];
+    protected $fillable = ['id', 'company_id', 'furnace_id', 'current_article_id', 'current_campaign_id', 'name', 'current_status'];
 
     public function company()
     {
@@ -26,5 +26,15 @@ class Machine extends Model
     public function currentArticle()
     {
         return $this->belongsTo(Article::class, 'current_article_id');
+    }
+
+    public function currentCampaign()
+    {
+        return $this->belongsTo(Campaign::class, 'current_campaign_id');
+    }
+
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class);
     }
 }

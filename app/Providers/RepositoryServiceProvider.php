@@ -15,6 +15,12 @@ use App\Core\Domain\Repositories\ExtractionRepositoryInterface;
 use App\Core\Infrastructure\Persistence\Eloquent\EloquentExtractionRepository;
 use App\Core\Domain\Repositories\AuthRepositoryInterface;
 use App\Core\Infrastructure\Persistence\Eloquent\EloquentAuthRepository;
+use App\Core\Domain\Repositories\ClientRepositoryInterface;
+use App\Core\Infrastructure\Persistence\Eloquent\EloquentClientRepository;
+use App\Core\Domain\Repositories\CampaignRepositoryInterface;
+use App\Core\Infrastructure\Persistence\Eloquent\EloquentCampaignRepository;
+use App\Core\Domain\Repositories\LineYieldRepositoryInterface;
+use App\Core\Infrastructure\Persistence\Eloquent\EloquentLineYieldRepository;
 use App\Core\Domain\Services\TokenServiceInterface;
 use App\Core\Infrastructure\Auth\SanctumTokenService;
 
@@ -28,6 +34,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ArticleRepositoryInterface::class, EloquentArticleRepository::class);
         $this->app->bind(ExtractionRepositoryInterface::class, EloquentExtractionRepository::class);
         $this->app->bind(AuthRepositoryInterface::class, EloquentAuthRepository::class);
+        $this->app->bind(ClientRepositoryInterface::class, EloquentClientRepository::class);
+        $this->app->bind(CampaignRepositoryInterface::class, EloquentCampaignRepository::class);
+        $this->app->bind(LineYieldRepositoryInterface::class, EloquentLineYieldRepository::class);
         $this->app->bind(TokenServiceInterface::class, SanctumTokenService::class);
     }
 }

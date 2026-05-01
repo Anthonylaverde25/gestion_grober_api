@@ -12,7 +12,9 @@ class ArticleMapper
         return DomainArticle::reconstitute(
             $eloquent->id,
             $eloquent->company_id,
-            $eloquent->name
+            $eloquent->name,
+            $eloquent->client_id,
+            $eloquent->client ? ClientMapper::toDomain($eloquent->client) : null
         );
     }
 
@@ -22,6 +24,7 @@ class ArticleMapper
             'id' => $domain->getId(),
             'company_id' => $domain->getCompanyId(),
             'name' => $domain->getName(),
+            'client_id' => $domain->getClientId(),
         ];
     }
 }
