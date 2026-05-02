@@ -12,6 +12,7 @@ use App\Http\Controllers\V1\AuthController;
 use App\Http\Controllers\V1\ClientController;
 use App\Http\Controllers\V1\CampaignController;
 use App\Http\Controllers\V1\LineYieldController;
+use App\Http\Controllers\V1\SystemController;
 
 use App\Http\Resources\V1\UserResource;
 use App\Core\Infrastructure\Persistence\Eloquent\Mappers\UserMapper;
@@ -30,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('v1')->group(function () {
+        Route::get('system/server-time', [SystemController::class, 'getServerTime']);
         Route::apiResource('companies', CompanyController::class)->only(['index', 'show']);
         Route::apiResource('articles', ArticleController::class)->only(['index', 'store']);
         Route::apiResource('furnaces', FurnaceController::class)->only(['index', 'store']);
