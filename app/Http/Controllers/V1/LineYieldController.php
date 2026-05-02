@@ -4,8 +4,10 @@ namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
 use App\Core\Application\UseCases\LineYield\RecordLineYield;
+use App\Core\Application\UseCases\LineYield\RecordLineYieldBatch;
 use App\Core\Application\UseCases\LineYield\GetMachineYieldHistory;
 use App\Core\Application\DTOs\LineYield\RecordLineYieldDTO;
+use App\Core\Application\DTOs\LineYield\RecordLineYieldBatchDTO;
 use App\Core\Domain\Repositories\LineYieldRepositoryInterface;
 use App\Http\Resources\V1\LineYieldResource;
 use Illuminate\Http\JsonResponse;
@@ -17,6 +19,7 @@ class LineYieldController extends Controller
     public function __construct(
         private LineYieldRepositoryInterface $lineYieldRepository,
         private RecordLineYield $recordLineYield,
+        private RecordLineYieldBatch $recordLineYieldBatch,
         private GetMachineYieldHistory $getMachineYieldHistory
     ) {}
 
@@ -49,6 +52,41 @@ class LineYieldController extends Controller
             ], 201);
         } catch (DomainException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
+        }
+    }
+
+    public function storeBatch(Request $request): JsonResponse
+    {
+        $request->validate([
+            'campaign_id' => 'required|uuid',
+            'items' => 'required|array|min:1',
+            'items.*.forming_yield' => 'required|numeric|min:0|max:100',
+            'items.*.packing_yield' => 'required|numeric|min:0|max:100',
+            'items.*.recorded_at' => 'nullable|date',
+            'items.*.notes' => 'nullable|string',
+        ]);
+
+        try {
+            $companyId = $this->activeCompanyId();
+
+            if (!$companyId) {
+                return response()->json([
+                    'message' => 'No active company context found.'
+                ], 422);
+            }
+
+            $yields = $this->recordLineYieldBatch->execute(
+                RecordLineYieldBatchDTO::fromRequest($request->all(), $companyId)
+            );
+
+            return response()->json([
+                'message' => 'Rendimientos en serie registrados correctamente',
+                'data' => LineYieldResource::collection($yields)
+            ], 201);
+        } catch (DomainException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al procesar el lote: ' . $e->getMessage()], 500);
         }
     }
 

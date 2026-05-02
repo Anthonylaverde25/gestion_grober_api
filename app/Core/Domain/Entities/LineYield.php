@@ -23,7 +23,8 @@ class LineYield
         string $campaignId,
         float $formingYield,
         float $packingYield,
-        ?string $notes = null
+        ?string $notes = null,
+        ?DateTimeImmutable $recordedAt = null
     ): self {
         self::assertValidYield($formingYield, 'Forming Yield');
         self::assertValidYield($packingYield, 'Packing Yield');
@@ -34,7 +35,7 @@ class LineYield
             $campaignId,
             $formingYield,
             $packingYield,
-            new DateTimeImmutable(),
+            $recordedAt ?? new DateTimeImmutable(),
             $notes
         );
     }

@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('campaigns/start', [CampaignController::class, 'start']);
         Route::post('campaigns/{campaignId}/finish', [CampaignController::class, 'finish']);
         Route::get('campaigns/{id}', [CampaignController::class, 'show']);
+        Route::post('line-yields/batch', [LineYieldController::class, 'storeBatch']);
         Route::post('line-yields', [LineYieldController::class, 'store']);
         Route::get('campaigns/{campaignId}/line-yields/history', [LineYieldController::class, 'history']);
         Route::get('machines/{machineId}/line-yields/history', [LineYieldController::class, 'machineHistory']);
