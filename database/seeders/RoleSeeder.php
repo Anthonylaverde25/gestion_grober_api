@@ -14,6 +14,7 @@ class RoleSeeder extends Seeder
             ['name' => 'Admin', 'slug' => 'admin', 'description' => 'Administrador Global de la APP'],
             ['name' => 'Owner', 'slug' => 'owner', 'description' => 'Dueño del Consorcio (Monitoreo Total)'],
             ['name' => 'CompanyManager', 'slug' => 'company-manager', 'description' => 'Administrador Local de Planta'],
+            ['name' => 'Supervisor', 'slug' => 'supervisor', 'description' => 'Supervisor de turnos y operarios'],
             ['name' => 'Operator', 'slug' => 'operator', 'description' => 'Carga de datos de producción'],
             ['name' => 'Viewer', 'slug' => 'viewer', 'description' => 'Acceso de consulta limitado'],
         ];

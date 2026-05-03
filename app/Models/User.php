@@ -40,4 +40,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'company_user');
     }
+
+    public function aliases()
+    {
+        return $this->hasMany(UserAlias::class);
+    }
 }

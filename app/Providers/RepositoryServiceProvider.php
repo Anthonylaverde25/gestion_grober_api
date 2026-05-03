@@ -21,6 +21,8 @@ use App\Core\Domain\Repositories\CampaignRepositoryInterface;
 use App\Core\Infrastructure\Persistence\Eloquent\EloquentCampaignRepository;
 use App\Core\Domain\Repositories\LineYieldRepositoryInterface;
 use App\Core\Infrastructure\Persistence\Eloquent\EloquentLineYieldRepository;
+use App\Core\Domain\Repositories\UserAliasRepositoryInterface;
+use App\Core\Infrastructure\Persistence\Eloquent\EloquentUserAliasRepository;
 use App\Core\Domain\Services\TokenServiceInterface;
 use App\Core\Infrastructure\Auth\SanctumTokenService;
 
@@ -37,6 +39,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ClientRepositoryInterface::class, EloquentClientRepository::class);
         $this->app->bind(CampaignRepositoryInterface::class, EloquentCampaignRepository::class);
         $this->app->bind(LineYieldRepositoryInterface::class, EloquentLineYieldRepository::class);
+        $this->app->bind(UserAliasRepositoryInterface::class, EloquentUserAliasRepository::class);
         $this->app->bind(TokenServiceInterface::class, SanctumTokenService::class);
     }
 }
