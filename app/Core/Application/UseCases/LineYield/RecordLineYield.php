@@ -35,7 +35,8 @@ class RecordLineYield
             $dto->formingYield,
             $dto->packingYield,
             $dto->notes,
-            $dto->recordedAt ? new \DateTimeImmutable($dto->recordedAt) : null
+            $dto->recordedAt ? new \DateTimeImmutable($dto->recordedAt) : null,
+            $dto->userAliasId
         );
 
         $this->lineYieldRepository->save($lineYield);

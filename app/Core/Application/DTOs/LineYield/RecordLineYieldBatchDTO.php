@@ -24,7 +24,8 @@ readonly class RecordLineYieldBatchDTO
                 (float) $item['forming_yield'],
                 (float) $item['packing_yield'],
                 $item['notes'] ?? null,
-                $item['recorded_at'] ?? null
+                $item['recorded_at'] ?? null,
+                $item['user_alias_id'] ?? null
             );
         }, $data['items']);
 

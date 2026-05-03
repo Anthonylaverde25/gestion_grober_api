@@ -14,7 +14,8 @@ class LineYield
         private float $formingYield,
         private float $packingYield,
         private DateTimeImmutable $recordedAt,
-        private ?string $notes = null
+        private ?string $notes = null,
+        private ?string $aliasId = null
     ) {}
 
     public static function create(
@@ -24,7 +25,8 @@ class LineYield
         float $formingYield,
         float $packingYield,
         ?string $notes = null,
-        ?DateTimeImmutable $recordedAt = null
+        ?DateTimeImmutable $recordedAt = null,
+        ?string $aliasId = null
     ): self {
         self::assertValidYield($formingYield, 'Forming Yield');
         self::assertValidYield($packingYield, 'Packing Yield');
@@ -36,7 +38,8 @@ class LineYield
             $formingYield,
             $packingYield,
             $recordedAt ?? new DateTimeImmutable(),
-            $notes
+            $notes,
+            $aliasId
         );
     }
 
@@ -47,9 +50,10 @@ class LineYield
         float $formingYield,
         float $packingYield,
         DateTimeImmutable $recordedAt,
-        ?string $notes = null
+        ?string $notes = null,
+        ?string $aliasId = null
     ): self {
-        return new self($id, $companyId, $campaignId, $formingYield, $packingYield, $recordedAt, $notes);
+        return new self($id, $companyId, $campaignId, $formingYield, $packingYield, $recordedAt, $notes, $aliasId);
     }
 
     // Getters
@@ -60,6 +64,7 @@ class LineYield
     public function getPackingYield(): float { return $this->packingYield; }
     public function getRecordedAt(): DateTimeImmutable { return $this->recordedAt; }
     public function getNotes(): ?string { return $this->notes; }
+    public function getAliasId(): ?string { return $this->aliasId; }
 
     private static function assertValidYield(float $yield, string $fieldName): void
     {

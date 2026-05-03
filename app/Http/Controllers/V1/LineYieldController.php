@@ -30,6 +30,7 @@ class LineYieldController extends Controller
             'forming_yield' => 'required|numeric|min:0|max:100',
             'packing_yield' => 'required|numeric|min:0|max:100',
             'notes' => 'nullable|string',
+            'user_alias_id' => 'nullable|uuid|exists:user_aliases,id',
         ]);
 
         try {
@@ -64,6 +65,7 @@ class LineYieldController extends Controller
             'items.*.packing_yield' => 'required|numeric|min:0|max:100',
             'items.*.recorded_at' => 'nullable|date',
             'items.*.notes' => 'nullable|string',
+            'items.*.user_alias_id' => 'nullable|uuid|exists:user_aliases,id',
         ]);
 
         try {

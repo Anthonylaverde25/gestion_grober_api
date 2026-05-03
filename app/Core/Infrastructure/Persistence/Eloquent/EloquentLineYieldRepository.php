@@ -37,6 +37,7 @@ class EloquentLineYieldRepository implements LineYieldRepositoryInterface
         return EloquentLineYield::select('line_yields.*')
             ->join('campaigns', 'line_yields.campaign_id', '=', 'campaigns.id')
             ->where('campaigns.machine_id', $machineId)
+            ->whereIn('campaigns.status', ['ACTIVE', 'PAUSED'])
             ->orderBy('line_yields.recorded_at', 'desc')
             ->limit($limit)
             ->get()

@@ -10,7 +10,8 @@ readonly class RecordLineYieldDTO
         public float $formingYield,
         public float $packingYield,
         public ?string $notes = null,
-        public ?string $recordedAt = null
+        public ?string $recordedAt = null,
+        public ?string $userAliasId = null
     ) {}
 
     public static function fromRequest(array $data): self
@@ -21,7 +22,8 @@ readonly class RecordLineYieldDTO
             (float) $data['forming_yield'],
             (float) $data['packing_yield'],
             $data['notes'] ?? null,
-            $data['recorded_at'] ?? null
+            $data['recorded_at'] ?? null,
+            $data['user_alias_id'] ?? null
         );
     }
 }

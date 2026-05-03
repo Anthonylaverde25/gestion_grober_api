@@ -17,7 +17,8 @@ class LineYieldMapper
             (float) $eloquent->forming_yield,
             (float) $eloquent->packing_yield,
             DateTimeImmutable::createFromInterface($eloquent->recorded_at),
-            $eloquent->notes
+            $eloquent->notes,
+            $eloquent->user_alias_id
         );
     }
 
@@ -31,6 +32,7 @@ class LineYieldMapper
             'packing_yield' => $domain->getPackingYield(),
             'recorded_at' => $domain->getRecordedAt(),
             'notes' => $domain->getNotes(),
+            'user_alias_id' => $domain->getAliasId(),
         ];
     }
 }

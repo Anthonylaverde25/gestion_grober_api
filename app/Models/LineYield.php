@@ -12,6 +12,7 @@ class LineYield extends Model
 
     protected $fillable = [
         'campaign_id',
+        'user_alias_id',
         'forming_yield',
         'packing_yield',
         'recorded_at',
@@ -26,5 +27,10 @@ class LineYield extends Model
     public function campaign()
     {
         return $this->belongsTo(Campaign::class);
+    }
+
+    public function userAlias()
+    {
+        return $this->belongsTo(UserAlias::class, 'user_alias_id');
     }
 }
