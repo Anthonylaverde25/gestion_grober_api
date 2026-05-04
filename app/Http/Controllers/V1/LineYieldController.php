@@ -104,8 +104,8 @@ class LineYieldController extends Controller
 
     public function machineHistory(Request $request, string $machineId): JsonResponse
     {
-        $limit = $request->query('limit', 50);
-        $yields = $this->getMachineYieldHistory->execute($machineId, (int) $limit);
+        $limit = $request->query('limit');
+        $yields = $this->getMachineYieldHistory->execute($machineId, $limit ? (int) $limit : null);
 
         return response()->json([
             'data' => LineYieldResource::collection($yields)

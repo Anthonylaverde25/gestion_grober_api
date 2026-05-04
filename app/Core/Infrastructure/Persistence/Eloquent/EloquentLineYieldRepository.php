@@ -25,22 +25,28 @@ class EloquentLineYieldRepository implements LineYieldRepositoryInterface
 
     public function findByCampaign(string $campaignId): array
     {
-        return EloquentLineYield::where('campaign_id', $campaignId)
+        return EloquentLineYield::with('userAlias')
+            ->where('campaign_id', $campaignId)
             ->orderBy('recorded_at', 'desc')
             ->get()
             ->map(fn($item) => LineYieldMapper::toDomain($item))
             ->toArray();
     }
 
-    public function findByMachine(string $machineId, int $limit = 50): array
+    public function findByMachine(string $machineId, ?int $limit = null): array
     {
-        return EloquentLineYield::select('line_yields.*')
+        $query = EloquentLineYield::with('userAlias')
+            ->select('line_yields.*')
             ->join('campaigns', 'line_yields.campaign_id', '=', 'campaigns.id')
             ->where('campaigns.machine_id', $machineId)
             ->whereIn('campaigns.status', ['ACTIVE', 'PAUSED'])
-            ->orderBy('line_yields.recorded_at', 'desc')
-            ->limit($limit)
-            ->get()
+            ->orderBy('line_yields.recorded_at', 'desc');
+
+        if ($limit) {
+            $query->limit($limit);
+        }
+
+        return $query->get()
             ->map(fn($item) => LineYieldMapper::toDomain($item))
             ->toArray();
     }

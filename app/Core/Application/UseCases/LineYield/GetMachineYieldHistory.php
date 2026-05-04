@@ -10,7 +10,7 @@ class GetMachineYieldHistory
         private LineYieldRepositoryInterface $lineYieldRepository
     ) {}
 
-    public function execute(string $machineId, int $limit = 50): array
+    public function execute(string $machineId, ?int $limit = null): array
     {
         return $this->lineYieldRepository->findByMachine($machineId, $limit);
     }

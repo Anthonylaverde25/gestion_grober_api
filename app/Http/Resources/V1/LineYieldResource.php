@@ -17,6 +17,7 @@ class LineYieldResource extends JsonResource
             'packing_yield' => $this->getPackingYield(),
             'recorded_at' => $this->getRecordedAt()->format('Y-m-d H:i:s'),
             'notes' => $this->getNotes(),
+            'alias' => $this->getAlias() ? new UserAliasResource($this->getAlias()) : null,
         ];
     }
 }

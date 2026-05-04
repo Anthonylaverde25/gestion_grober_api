@@ -18,7 +18,10 @@ class LineYieldMapper
             (float) $eloquent->packing_yield,
             DateTimeImmutable::createFromInterface($eloquent->recorded_at),
             $eloquent->notes,
-            $eloquent->user_alias_id
+            $eloquent->user_alias_id,
+            $eloquent->relationLoaded('userAlias') && $eloquent->userAlias 
+                ? UserAliasMapper::toDomain($eloquent->userAlias) 
+                : null
         );
     }
 
