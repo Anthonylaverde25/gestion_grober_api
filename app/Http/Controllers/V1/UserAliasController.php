@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Core\Application\UseCases\UserAlias\SearchAliasByLegajo;
+use App\Core\Application\UseCases\UserAlias\CreateUserAlias;
 use App\Http\Resources\V1\UserAliasResource;
 
 class UserAliasController extends Controller
 {
     public function __construct(
-        private SearchAliasByLegajo $searchAliasByLegajo
+        private SearchAliasByLegajo $searchAliasByLegajo,
+        private CreateUserAlias $createUserAlias
     ) {}
 
     public function search(Request $request): JsonResponse|UserAliasResource
@@ -29,5 +31,28 @@ class UserAliasController extends Controller
         }
 
         return new UserAliasResource($alias);
+    }
+
+    public function store(Request $request): JsonResponse|UserAliasResource
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'name' => 'required|string|max:255',
+            'legajo' => 'required|string|max:50'
+        ]);
+
+        try {
+            $alias = $this->createUserAlias->execute(
+                $validated['user_id'],
+                $validated['name'],
+                $validated['legajo']
+            );
+
+            return new UserAliasResource($alias);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 422);
+        }
     }
 }

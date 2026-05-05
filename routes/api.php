@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('v1')->group(function () {
         Route::get('system/server-time', [SystemController::class, 'getServerTime']);
         Route::get('user-aliases/search', [UserAliasController::class, 'search']);
+        Route::post('user-aliases', [UserAliasController::class, 'store']);
         Route::apiResource('companies', CompanyController::class)->only(['index', 'show']);
         Route::apiResource('articles', ArticleController::class)->only(['index', 'store']);
         Route::apiResource('furnaces', FurnaceController::class)->only(['index', 'store']);

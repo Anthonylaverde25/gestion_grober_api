@@ -10,8 +10,8 @@ class GetCompanyUsers
         private UserRepositoryInterface $userRepository
     ) {}
 
-    public function execute(string $companyId): array
+    public function execute(): array
     {
-        return $this->userRepository.findByCompany($companyId);
+        return $this->userRepository->findByCompany();
     }
 }

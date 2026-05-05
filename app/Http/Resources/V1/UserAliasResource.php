@@ -16,6 +16,7 @@ class UserAliasResource extends JsonResource
     {
         return [
             'id' => $this->resource->getId(),
+            'user_id' => $this->resource->getUserId(),
             'name' => $this->resource->getName(),
             'legajo' => $this->resource->getLegajo(),
         ];
