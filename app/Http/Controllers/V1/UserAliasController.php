@@ -13,7 +13,8 @@ class UserAliasController extends Controller
 {
     public function __construct(
         private SearchAliasByLegajo $searchAliasByLegajo,
-        private CreateUserAlias $createUserAlias
+        private CreateUserAlias $createUserAlias,
+        private \App\Core\Domain\Repositories\UserAliasRepositoryInterface $repository
     ) {}
 
     public function search(Request $request): JsonResponse|UserAliasResource
@@ -31,6 +32,19 @@ class UserAliasController extends Controller
         }
 
         return new UserAliasResource($alias);
+    }
+
+    public function index(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id'
+        ]);
+
+        $aliases = $this->repository->findByUser($validated['user_id']);
+
+        return response()->json([
+            'data' => UserAliasResource::collection($aliases)
+        ]);
     }
 
     public function store(Request $request): JsonResponse|UserAliasResource

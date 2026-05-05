@@ -11,6 +11,12 @@ class UserMapper
     public static function toDomain(EloquentUser $eloquent): DomainUser
     {
         $roleSlugs = $eloquent->roles ? $eloquent->roles->pluck('slug')->toArray() : ['admin'];
+        
+        // Obtener slugs de módulos permitidos a través de los roles
+        $moduleSlugs = $eloquent->roles 
+            ? $eloquent->roles->flatMap->modules->pluck('slug')->unique()->toArray() 
+            : [];
+
         $globalRoles = ['admin', 'superadmin', 'owner'];
         
         $hasGlobalAccess = !empty(array_intersect($roleSlugs, $globalRoles));
@@ -30,7 +36,8 @@ class UserMapper
             $roleSlugs,
             $companies,
             $eloquent->last_active_company_id,
-            true
+            true,
+            $moduleSlugs
         );
     }
 }

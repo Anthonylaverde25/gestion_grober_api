@@ -13,8 +13,14 @@ class User
         private array $roles = [],
         private array $companies = [],
         private ?string $lastActiveCompanyId = null,
-        private bool $isActive = true
+        private bool $isActive = true,
+        private array $modules = []
     ) {}
+
+    public function getModules(): array
+    {
+        return $this->modules;
+    }
 
     public function getId(): int
     {
