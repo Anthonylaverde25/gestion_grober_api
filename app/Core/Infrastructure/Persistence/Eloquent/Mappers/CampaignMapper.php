@@ -24,6 +24,7 @@ class CampaignMapper
             $eloquent->operator_id,
             $eloquent->client?->commercial_name,
             $eloquent->article?->name,
+            $eloquent->company?->commercial_name ?? $eloquent->company?->name,
             $eloquent->relationLoaded('machine') && $eloquent->machine ? MachineMapper::toDomain($eloquent->machine) : null,
             $eloquent->relationLoaded('client') && $eloquent->client ? ClientMapper::toDomain($eloquent->client) : null,
             $eloquent->relationLoaded('article') && $eloquent->article ? ArticleMapper::toDomain($eloquent->article) : null

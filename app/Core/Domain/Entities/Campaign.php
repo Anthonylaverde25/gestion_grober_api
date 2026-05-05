@@ -26,6 +26,7 @@ class Campaign
         private ?string $operatorId = null,
         private ?string $clientName = null,
         private ?string $articleName = null,
+        private ?string $companyName = null,
         private ?Machine $machine = null,
         private ?Client $client = null,
         private ?Article $article = null
@@ -73,16 +74,18 @@ class Campaign
         ?string $operatorId = null,
         ?string $clientName = null,
         ?string $articleName = null,
+        ?string $companyName = null,
         ?Machine $machine = null,
         ?Client $client = null,
         ?Article $article = null
     ): self {
-        return new self($id, $companyId, $codigo, $machineId, $articleId, $clientId, $status, $startedAt, $finishedAt, $totalYieldRecords, $operatorId, $clientName, $articleName, $machine, $client, $article);
+        return new self($id, $companyId, $codigo, $machineId, $articleId, $clientId, $status, $startedAt, $finishedAt, $totalYieldRecords, $operatorId, $clientName, $articleName, $companyName, $machine, $client, $article);
     }
 
     // Getters
     public function getId(): string { return $this->id; }
     public function getCompanyId(): string { return $this->companyId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
     public function getCodigo(): string { return $this->codigo; }
     public function getMachineId(): string { return $this->machineId; }
     public function getArticleId(): string { return $this->articleId; }

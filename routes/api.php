@@ -14,6 +14,8 @@ use App\Http\Controllers\V1\CampaignController;
 use App\Http\Controllers\V1\LineYieldController;
 use App\Http\Controllers\V1\SystemController;
 use App\Http\Controllers\V1\UserAliasController;
+use App\Http\Controllers\V1\UserController;
+use App\Http\Controllers\V1\Mobile\MobileDashboardController;
 
 use App\Http\Resources\V1\UserResource;
 use App\Core\Infrastructure\Persistence\Eloquent\Mappers\UserMapper;
@@ -25,7 +27,7 @@ Route::prefix('v1/auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/auth/logout', [AuthController::class, 'logout']);
     Route::post('v1/auth/switch-context', [AuthController::class, 'switchContext']);
-    
+
     Route::get('/user', function (Request $request) {
         $userDomain = UserMapper::toDomain($request->user());
         return new UserResource($userDomain);
@@ -41,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('machines/{machineId}/current-article', [MachineController::class, 'changeCurrentArticle']);
         Route::post('extractions', [ExtractionController::class, 'store']);
         Route::get('machines/{machineId}/extractions/history', [ExtractionController::class, 'history']);
-        
+
         Route::get('clients', [ClientController::class, 'index']);
         Route::post('clients', [ClientController::class, 'store']);
         Route::get('campaigns', [CampaignController::class, 'index']);
@@ -52,5 +54,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('line-yields', [LineYieldController::class, 'store']);
         Route::get('campaigns/{campaignId}/line-yields/history', [LineYieldController::class, 'history']);
         Route::get('machines/{machineId}/line-yields/history', [LineYieldController::class, 'machineHistory']);
+        Route::get('users', [UserController::class, 'index']);
+        Route::post('users', [UserController::class, 'store']);
+
+        // Mobile specialized endpoints
+        Route::get('mobile/active-campaigns', [MobileDashboardController::class, 'activeCampaigns']);
+        Route::get('mobile/campaigns/{id}', [MobileDashboardController::class, 'campaignDetail']);
+        Route::get('mobile/campaigns/{id}/yields', [MobileDashboardController::class, 'campaignYields']);
     });
 });

@@ -14,8 +14,13 @@ class CampaignResource extends JsonResource
             'company_id' => $this->getCompanyId(),
             'codigo' => $this->getCodigo(),
             'status' => $this->getStatus(),
-            'started_at' => $this->getStartedAt()->format('Y-m-d H:i:s'),
-            'finished_at' => $this->getFinishedAt()?->format('Y-m-d H:i:s'),
+            'company_name' => $this->getCompanyName() ?? 'N/A',
+            'started_at' => $this->getStartedAt()
+                ->setTimezone(new \DateTimeZone('America/Argentina/Buenos_Aires'))
+                ->format('Y-m-d H:i:s'),
+            'finished_at' => $this->getFinishedAt()
+                ?->setTimezone(new \DateTimeZone('America/Argentina/Buenos_Aires'))
+                ->format('Y-m-d H:i:s'),
             'total_yield_records' => $this->getTotalYieldRecords(),
             'machine' => [
                 'id' => $this->getMachineId(),

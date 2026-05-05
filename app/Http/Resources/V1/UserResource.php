@@ -23,6 +23,7 @@ class UserResource extends JsonResource
             'email' => $this->resource->getEmail()->getValue(),
             'roles' => $this->resource->getRoles(),
             'last_active_company_id' => $this->resource->getLastActiveCompanyId(),
+            'is_active' => $this->resource->isActive(),
             'companies' => CompanyResource::collection($this->resource->getCompanies()),
         ];
     }

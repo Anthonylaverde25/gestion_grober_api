@@ -52,4 +52,9 @@ class Campaign extends Model
     {
         return $this->hasMany(LineYield::class);
     }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }

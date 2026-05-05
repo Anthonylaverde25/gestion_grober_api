@@ -25,7 +25,7 @@ class EloquentCampaignRepository implements CampaignRepositoryInterface
 
     public function findActiveByMachine(string $machineId): ?DomainCampaign
     {
-        $eloquent = EloquentCampaign::with(['client', 'article', 'machine'])
+        $eloquent = EloquentCampaign::with(['client', 'article', 'machine', 'company'])
             ->where('machine_id', $machineId)
             ->where('status', 'ACTIVE')
             ->first();
@@ -35,8 +35,27 @@ class EloquentCampaignRepository implements CampaignRepositoryInterface
 
     public function findByCompany(string $companyId): array
     {
-        return EloquentCampaign::with(['client', 'article', 'machine'])
+        return EloquentCampaign::with(['client', 'article', 'machine', 'company'])
             ->where('company_id', $companyId)
+            ->get()
+            ->map(fn($item) => CampaignMapper::toDomain($item))
+            ->toArray();
+    }
+
+    public function findAllActive(): array
+    {
+        return EloquentCampaign::withoutGlobalScope('company_context')
+            ->with(['client', 'article', 'machine', 'company'])
+            ->where('status', 'ACTIVE')
+            ->get()
+            ->map(fn($item) => CampaignMapper::toDomain($item))
+            ->toArray();
+    }
+
+    public function findAll(): array
+    {
+        return EloquentCampaign::withoutGlobalScope('company_context')
+            ->with(['client', 'article', 'machine', 'company'])
             ->get()
             ->map(fn($item) => CampaignMapper::toDomain($item))
             ->toArray();
