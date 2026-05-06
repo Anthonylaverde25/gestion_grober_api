@@ -52,7 +52,7 @@ class UserAliasController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|integer|exists:users,id',
             'name' => 'required|string|max:255',
-            'legajo' => 'required|string|max:50'
+            'legajo' => 'required|string|max:50|unique:user_aliases,legajo'
         ]);
 
         try {

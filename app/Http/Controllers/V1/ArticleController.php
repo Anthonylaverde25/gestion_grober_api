@@ -10,11 +10,14 @@ use App\Http\Resources\V1\ArticleResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
+use App\Core\Application\UseCases\Article\GetArticleByIdUseCase;
+
 class ArticleController extends Controller
 {
     public function __construct(
         private CreateArticleUseCase $createArticleUseCase,
-        private GetArticlesByCompanyUseCase $getArticlesByCompanyUseCase
+        private GetArticlesByCompanyUseCase $getArticlesByCompanyUseCase,
+        private GetArticleByIdUseCase $getArticleByIdUseCase
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -29,6 +32,19 @@ class ArticleController extends Controller
 
         return response()->json([
             'data' => ArticleResource::collection($articles)
+        ]);
+    }
+
+    public function show(string $id): JsonResponse
+    {
+        $article = $this->getArticleByIdUseCase->execute($id);
+
+        if (!$article) {
+            return response()->json(['message' => 'Article not found'], 404);
+        }
+
+        return response()->json([
+            'data' => new ArticleResource($article)
         ]);
     }
 

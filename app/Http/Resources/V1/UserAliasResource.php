@@ -19,6 +19,7 @@ class UserAliasResource extends JsonResource
             'user_id' => $this->resource->getUserId(),
             'name' => $this->resource->getName(),
             'legajo' => $this->resource->getLegajo(),
+            'is_active' => $this->resource->isActive(),
         ];
     }
 }

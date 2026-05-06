@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('user-aliases', [UserAliasController::class, 'index']);
         Route::post('user-aliases', [UserAliasController::class, 'store']);
         Route::apiResource('companies', CompanyController::class)->only(['index', 'show']);
-        Route::apiResource('articles', ArticleController::class)->only(['index', 'store']);
+        Route::apiResource('articles', ArticleController::class)->only(['index', 'store', 'show']);
         Route::apiResource('furnaces', FurnaceController::class)->only(['index', 'store']);
         Route::apiResource('machines', MachineController::class)->only(['index', 'store']);
         Route::patch('machines/{machineId}/current-article', [MachineController::class, 'changeCurrentArticle']);
