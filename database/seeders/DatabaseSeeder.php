@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             MachineSeeder::class,
             CampaignsAndYieldsSeeder::class,
             ExtractionSeeder::class,
+            ModuleSeeder::class,
         ]);
     }
 }

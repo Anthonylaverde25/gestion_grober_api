@@ -66,8 +66,8 @@ class CampaignsAndYieldsSeeder extends Seeder
             $client = ($index % 2 === 0) ? $clientA : $clientB;
             $article = $articles[$index % $articles->count()];
             
-            // Iniciamos la campaña hace 31 días para tener un mes completo de datos
-            $startedAt = Carbon::now()->subDays(31);
+            // Iniciamos la campaña hace 91 días para tener 3 meses de datos
+            $startedAt = Carbon::now()->subDays(91);
 
             $campaign = Campaign::create([
                 'id' => Str::uuid()->toString(),
@@ -84,9 +84,9 @@ class CampaignsAndYieldsSeeder extends Seeder
             // Vincular campaña a la máquina
             $machine->update(['current_campaign_id' => $campaign->id]);
 
-            // Generar 1 mes de datos (cada hora)
+            // Generar 3 meses de datos (cada hora)
             $totalRecords = 0;
-            for ($day = 30; $day >= 0; $day--) {
+            for ($day = 90; $day >= 0; $day--) {
                 for ($hour = 0; $hour < 24; $hour++) {
                     // Evitar registros en el futuro
                     $recordedAt = Carbon::now()->subDays($day)->startOfDay()->addHours($hour);
