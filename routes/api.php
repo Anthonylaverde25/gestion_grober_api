@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Mobile specialized endpoints
         Route::get('mobile/active-campaigns', [MobileDashboardController::class, 'activeCampaigns']);
         Route::get('mobile/campaigns/{id}', [MobileDashboardController::class, 'campaignDetail']);
+        Route::get('mobile/campaigns/{id}/yields/summary', [MobileDashboardController::class, 'campaignYieldSummary']);
         Route::get('mobile/campaigns/{id}/yields', [MobileDashboardController::class, 'campaignYields']);
     });
 });
