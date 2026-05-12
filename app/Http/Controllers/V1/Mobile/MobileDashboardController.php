@@ -103,18 +103,22 @@ class MobileDashboardController extends Controller
             ")
             ->first();
 
-        // ── Query 2: hourly aggregates — chart points + trend ────────────────
+        // ── Query 2: hourly aggregates (LAST 24h ONLY) — chart points + trend ─
+        // Capped to 24 hours to keep the mobile payload light (~24 points max).
         // label is pre-formatted by MySQL so the frontend just passes it to gifted-charts.
         $hourlyRows = LineYield::withoutGlobalScope('company_context')
             ->where('campaign_id', $id)
+            ->where('recorded_at', '>=', now()->subHours(24))
             ->selectRaw("
                 DATE_FORMAT(CONVERT_TZ(recorded_at, '+00:00', '" . self::TZ_OFFSET . "'), '%Y-%m-%d %H:00:00') AS bucket,
-                DATE_FORMAT(CONVERT_TZ(recorded_at, '+00:00', '" . self::TZ_OFFSET . "'), '%H:%i')             AS label,
+                DATE_FORMAT(CONVERT_TZ(recorded_at, '+00:00', '" . self::TZ_OFFSET . "'), '%d/%m %Hh')         AS label,
+                DATE_FORMAT(CONVERT_TZ(recorded_at, '+00:00', '" . self::TZ_OFFSET . "'), '%d/%m')             AS date_label,
+                DATE_FORMAT(CONVERT_TZ(recorded_at, '+00:00', '" . self::TZ_OFFSET . "'), '%H:%i')             AS time_label,
                 ROUND(AVG(forming_yield), 1)                                                                    AS avg_forming,
                 ROUND(AVG(packing_yield), 1)                                                                    AS avg_packing,
                 COUNT(*)                                                                                        AS sample_count
             ")
-            ->groupBy('bucket', 'label')
+            ->groupBy('bucket', 'label', 'date_label', 'time_label')
             ->orderBy('bucket', 'asc')
             ->get();
 
@@ -130,7 +134,9 @@ class MobileDashboardController extends Controller
         }
 
         $chartPoints = $hourlyRows->map(fn($row) => [
-            'label'        => $row->label,       // "14:00" — ready for gifted-charts
+            'label'        => $row->label,       // "11/05 14h" — date + hour for X axis
+            'date_label'   => $row->date_label,  // "11/05" — for day-boundary markers
+            'time_label'   => $row->time_label,  // "14:00" — for tooltip detail
             'avg_forming'  => (float) $row->avg_forming,
             'avg_packing'  => (float) $row->avg_packing,
             'sample_count' => (int)   $row->sample_count,
