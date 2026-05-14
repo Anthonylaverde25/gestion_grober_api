@@ -19,6 +19,12 @@ if [ "$RUN_MIGRATIONS" = "true" ]; then
     php artisan migrate --force
 fi
 
+# Ejecución de semillas (opcional)
+if [ "$RUN_SEEDS" = "true" ]; then
+    echo "🌱  Sembrando datos iniciales (seeds)..."
+    php artisan db:seed --force
+fi
+
 echo "✅ Sistema preparado. Iniciando servicios..."
 echo "---------------------------------------------------------"
 

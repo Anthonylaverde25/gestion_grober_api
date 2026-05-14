@@ -24,6 +24,10 @@ Route::prefix('v1/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
+Route::get('/health', function () {
+    return response()->json(['status' => 'ok', 'timestamp' => now()]);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/auth/logout', [AuthController::class, 'logout']);
     Route::post('v1/auth/switch-context', [AuthController::class, 'switchContext']);
