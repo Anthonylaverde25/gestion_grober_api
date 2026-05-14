@@ -6,6 +6,12 @@ echo "---------------------------------------------------------"
 echo "🚀 Iniciando Entorno de Producción Grober"
 echo "---------------------------------------------------------"
 
+# Configuración dinámica del puerto de Nginx
+# Railway asigna un puerto aleatorio en la variable $PORT
+export PORT=${PORT:-80}
+echo "🌐 Configurando Nginx para escuchar en el puerto $PORT..."
+sed -i "s/PORT_PLACEHOLDER/$PORT/g" /etc/nginx/http.d/default.conf
+
 # Optimización de caché
 echo "📦 Optimizando configuración y rutas..."
 php artisan config:cache
