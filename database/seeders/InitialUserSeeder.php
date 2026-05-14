@@ -34,8 +34,14 @@ class InitialUserSeeder extends Seeder
             ]
         );
         
-        // Vincular con la empresa y el rol
-        $admin->companies()->sync([
+        // Vincular como Admin Global (acceso a todas las empresas)
+        \Illuminate\Support\Facades\DB::table('company_user')->updateOrInsert(
+            ['user_id' => $admin->id, 'company_id' => null],
+            ['role_id' => $adminRole->id]
+        );
+        
+        // También lo vinculamos a la empresa inicial por defecto si es necesario para el perfil
+        $admin->companies()->syncWithoutDetaching([
             $company->id => ['role_id' => $adminRole->id]
         ]);
 
