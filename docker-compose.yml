@@ -1,0 +1,49 @@
+services:
+  # API Laravel (Nginx + PHP-FPM)
+  api:
+    build:
+      context: .
+      target: production
+    container_name: grober-api
+    restart: unless-stopped
+    volumes:
+      - .:/var/www
+    ports:
+      - "8080:80"
+    environment:
+      - APP_NAME=GroberAPI
+      - APP_ENV=local
+      - APP_KEY=base64:cLCdzTJRUsa1lmmmkTeB2KFG6RjHms75E7qdb6G5cjQ=
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8080
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=gestion_grober
+      - DB_USERNAME=grober_user
+      - DB_PASSWORD=grober_pass
+      - RUN_MIGRATIONS=true
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Base de Datos MySQL
+  db:
+    image: mysql:8.0
+    container_name: grober-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=gestion_grober
+      - MYSQL_USER=grober_user
+      - MYSQL_PASSWORD=grober_pass
+      - MYSQL_ROOT_PASSWORD=root_pass
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:

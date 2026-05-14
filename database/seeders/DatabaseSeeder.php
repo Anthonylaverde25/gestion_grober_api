@@ -14,11 +14,7 @@ class DatabaseSeeder extends Seeder
             ConsortiumSeeder::class,
             CompanySeeder::class,
             FurnaceSeeder::class,
-            ArticleSeeder::class,
-            UserSeeder::class,
-            MachineSeeder::class,
-            CampaignsAndYieldsSeeder::class,
-            ExtractionSeeder::class,
+            InitialUserSeeder::class,
             ModuleSeeder::class,
         ]);
     }
