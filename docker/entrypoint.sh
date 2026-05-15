@@ -19,10 +19,14 @@ php artisan route:cache
 php artisan view:cache
 
 # Ejecución de migraciones
-# Solo se ejecutan si la base de datos está configurada
-if [ "$RUN_MIGRATIONS" = "true" ]; then
-    echo "🗄️  Ejecutando migraciones de base de datos..."
-    php artisan migrate --force
+if [ "$FRESH_DATABASE" = "true" ]; then
+    echo "🧹 LIMPIEZA PROFUNDA: Recreando base de datos desde cero..."
+    php artisan migrate:fresh --force
+else
+    if [ "$RUN_MIGRATIONS" = "true" ]; then
+        echo "🗄️  Ejecutando migraciones de base de datos..."
+        php artisan migrate --force
+    fi
 fi
 
 # Ejecución de semillas (opcional)
