@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
+use App\Core\Application\UseCases\Furnace\UpdateFurnace;
 use App\Core\Application\UseCases\Furnace\CreateFurnace;
 use App\Core\Application\UseCases\Furnace\ListFurnacesByCompany;
 use App\Core\Application\DTOs\Furnace\CreateFurnaceDTO;
@@ -14,7 +15,8 @@ class FurnaceController extends Controller
 {
     public function __construct(
         private ListFurnacesByCompany $listFurnacesUseCase,
-        private CreateFurnace $createFurnaceUseCase
+        private CreateFurnace $createFurnaceUseCase,
+        private UpdateFurnace $updateFurnaceUseCase
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -56,5 +58,15 @@ class FurnaceController extends Controller
             'message' => 'Horno creado correctamente',
             'data' => new FurnaceResource($furnace)
         ], 201);
+    }
+
+    public function update(Request $request, string $id): JsonResponse
+    {
+        $furnace = $this->updateFurnaceUseCase->execute($id, $request->all());
+
+        return response()->json([
+            'message' => 'Horno actualizado correctamente',
+            'data' => new FurnaceResource($furnace)
+        ]);
     }
 }

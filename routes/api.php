@@ -15,6 +15,7 @@ use App\Http\Controllers\V1\LineYieldController;
 use App\Http\Controllers\V1\SystemController;
 use App\Http\Controllers\V1\UserAliasController;
 use App\Http\Controllers\V1\UserController;
+use App\Http\Controllers\V1\DashboardController;
 use App\Http\Controllers\V1\Mobile\MobileDashboardController;
 
 use App\Http\Resources\V1\UserResource;
@@ -38,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('v1')->group(function () {
+        Route::get('dashboard/overview', [DashboardController::class, 'overview']);
         Route::get('system/server-time', [SystemController::class, 'getServerTime']);
         Route::get('user-aliases/search', [UserAliasController::class, 'search']);
         Route::get('user-aliases', [UserAliasController::class, 'index']);
@@ -45,8 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('user-aliases/{id}/toggle-status', [UserAliasController::class, 'toggleStatus']);
         Route::apiResource('companies', CompanyController::class)->only(['index', 'show']);
         Route::apiResource('articles', ArticleController::class)->only(['index', 'store', 'show']);
-        Route::apiResource('furnaces', FurnaceController::class)->only(['index', 'store']);
-        Route::apiResource('machines', MachineController::class)->only(['index', 'store']);
+        Route::apiResource('furnaces', FurnaceController::class)->only(['index', 'store', 'update']);
+        Route::apiResource('machines', MachineController::class)->only(['index', 'store', 'update']);
         Route::patch('machines/{machineId}/current-article', [MachineController::class, 'changeCurrentArticle']);
         Route::post('extractions', [ExtractionController::class, 'store']);
         Route::get('machines/{machineId}/extractions/history', [ExtractionController::class, 'history']);

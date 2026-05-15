@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Core\Application\DTOs\Machine\CreateMachineDTO;
 use App\Core\Application\DTOs\Machine\ChangeMachineArticleDTO;
+use App\Core\Application\UseCases\Machine\UpdateMachine;
 use App\Core\Application\UseCases\Machine\ChangeMachineCurrentArticle;
 use App\Core\Application\UseCases\Machine\CreateMachine;
 use App\Core\Application\UseCases\Machine\ListMachinesByCompany;
@@ -20,7 +21,8 @@ class MachineController extends Controller
         private ListMachinesByCompany $listMachinesByCompanyUseCase,
         private ListMachinesByFurnace $listMachinesByFurnaceUseCase,
         private CreateMachine $createMachineUseCase,
-        private ChangeMachineCurrentArticle $changeMachineCurrentArticleUseCase
+        private ChangeMachineCurrentArticle $changeMachineCurrentArticleUseCase,
+        private UpdateMachine $updateMachineUseCase
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -97,6 +99,16 @@ class MachineController extends Controller
 
         return response()->json([
             'message' => 'Artículo actual de la máquina actualizado correctamente',
+            'data' => new MachineResource($machine),
+        ]);
+    }
+
+    public function update(Request $request, string $id): JsonResponse
+    {
+        $machine = $this->updateMachineUseCase->execute($id, $request->all());
+
+        return response()->json([
+            'message' => 'Máquina actualizada correctamente',
             'data' => new MachineResource($machine),
         ]);
     }
