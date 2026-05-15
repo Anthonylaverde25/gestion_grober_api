@@ -20,7 +20,8 @@ class LineYieldController extends Controller
         private LineYieldRepositoryInterface $lineYieldRepository,
         private RecordLineYield $recordLineYield,
         private RecordLineYieldBatch $recordLineYieldBatch,
-        private GetMachineYieldHistory $getMachineYieldHistory
+        private GetMachineYieldHistory $getMachineYieldHistory,
+        private \App\Core\Domain\Repositories\UserAliasRepositoryInterface $userAliasRepository
     ) {}
 
     public function store(Request $request): JsonResponse
@@ -41,6 +42,13 @@ class LineYieldController extends Controller
                 return response()->json([
                     'message' => 'No active company context found.'
                 ], 422);
+            }
+
+            if (!empty($data['user_alias_id'])) {
+                $alias = $this->userAliasRepository->findById($data['user_alias_id']);
+                if ($alias && !$alias->isActive()) {
+                    return response()->json(['message' => 'El alias especificado está desactivado y no puede operar.'], 403);
+                }
             }
 
             $lineYield = $this->recordLineYield->execute(
@@ -77,8 +85,18 @@ class LineYieldController extends Controller
                 ], 422);
             }
 
+            $data = $request->all();
+            foreach ($data['items'] as $item) {
+                if (!empty($item['user_alias_id'])) {
+                    $alias = $this->userAliasRepository->findById($item['user_alias_id']);
+                    if ($alias && !$alias->isActive()) {
+                        return response()->json(['message' => 'Un alias especificado en el lote está desactivado y no puede operar.'], 403);
+                    }
+                }
+            }
+
             $yields = $this->recordLineYieldBatch->execute(
-                RecordLineYieldBatchDTO::fromRequest($request->all(), $companyId)
+                RecordLineYieldBatchDTO::fromRequest($data, $companyId)
             );
 
             return response()->json([

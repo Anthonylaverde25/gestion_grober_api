@@ -26,9 +26,7 @@ class EloquentUserAliasRepository implements UserAliasRepositoryInterface
      */
     public function findByUser(int $userId): array
     {
-        $aliases = EloquentUserAlias::where('user_id', $userId)
-            ->where('is_active', true)
-            ->get();
+        $aliases = EloquentUserAlias::where('user_id', $userId)->get();
 
         return $aliases->map(fn($item) => UserAliasMapper::toDomain($item))->toArray();
     }

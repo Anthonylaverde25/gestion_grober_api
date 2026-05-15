@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('user-aliases/search', [UserAliasController::class, 'search']);
         Route::get('user-aliases', [UserAliasController::class, 'index']);
         Route::post('user-aliases', [UserAliasController::class, 'store']);
+        Route::patch('user-aliases/{id}/toggle-status', [UserAliasController::class, 'toggleStatus']);
         Route::apiResource('companies', CompanyController::class)->only(['index', 'show']);
         Route::apiResource('articles', ArticleController::class)->only(['index', 'store', 'show']);
         Route::apiResource('furnaces', FurnaceController::class)->only(['index', 'store']);

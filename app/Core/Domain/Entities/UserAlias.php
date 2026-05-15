@@ -43,8 +43,8 @@ class UserAlias
     public function getLegajo(): string { return $this->legajo; }
     public function isActive(): bool { return $this->isActive; }
 
-    public function deactivate(): void
+    public function toggleActive(): void
     {
-        $this->isActive = false;
+        $this->isActive = !$this->isActive;
     }
 }

@@ -7,13 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Core\Application\UseCases\UserAlias\SearchAliasByLegajo;
 use App\Core\Application\UseCases\UserAlias\CreateUserAlias;
+use App\Core\Application\UseCases\UserAlias\ToggleUserAliasStatus;
 use App\Http\Resources\V1\UserAliasResource;
+use DomainException;
 
 class UserAliasController extends Controller
 {
     public function __construct(
         private SearchAliasByLegajo $searchAliasByLegajo,
         private CreateUserAlias $createUserAlias,
+        private ToggleUserAliasStatus $toggleUserAliasStatus,
         private \App\Core\Domain\Repositories\UserAliasRepositoryInterface $repository
     ) {}
 
@@ -29,6 +32,12 @@ class UserAliasController extends Controller
             return response()->json([
                 'message' => 'Legajo no encontrado.'
             ], 404);
+        }
+
+        if (!$alias->isActive()) {
+            return response()->json([
+                'message' => 'Este alias ha sido desactivado y no puede operar.'
+            ], 403);
         }
 
         return new UserAliasResource($alias);
@@ -64,6 +73,18 @@ class UserAliasController extends Controller
 
             return new UserAliasResource($alias);
         } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function toggleStatus(Request $request, string $id): JsonResponse|UserAliasResource
+    {
+        try {
+            $alias = $this->toggleUserAliasStatus->execute($id);
+            return new UserAliasResource($alias);
+        } catch (DomainException $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 422);
