@@ -93,4 +93,25 @@ class DashboardController extends Controller
             ]
         ]);
     }
+
+    public function linesPerformanceSummary(Request $request): JsonResponse
+    {
+        // Calculamos los KPIs globales basándonos en los LineYields de las campañas ACTIVAS.
+        // El global scope de company_id actuará automáticamente.
+        $kpis = \App\Models\LineYield::whereHas('campaign', function($q) {
+                $q->where('status', 'ACTIVE');
+            })
+            ->selectRaw("
+                ROUND(AVG(forming_yield), 1) as avg_forming,
+                ROUND(AVG(packing_yield), 1) as avg_packing
+            ")
+            ->first();
+
+        return response()->json([
+            'data' => [
+                'avg_forming' => (float) ($kpis->avg_forming ?? 0),
+                'avg_packing' => (float) ($kpis->avg_packing ?? 0),
+            ]
+        ]);
+    }
 }

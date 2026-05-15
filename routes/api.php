@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('v1')->group(function () {
         Route::get('dashboard/overview', [DashboardController::class, 'overview']);
+        Route::get('dashboard/lines-performance/summary', [DashboardController::class, 'linesPerformanceSummary']);
         Route::get('system/server-time', [SystemController::class, 'getServerTime']);
         Route::get('user-aliases/search', [UserAliasController::class, 'search']);
         Route::get('user-aliases', [UserAliasController::class, 'index']);
