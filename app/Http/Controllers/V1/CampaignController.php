@@ -7,6 +7,7 @@ use App\Core\Application\UseCases\Campaign\OpenCampaign;
 use App\Core\Application\UseCases\Campaign\CloseCampaign;
 use App\Core\Application\DTOs\Campaign\OpenCampaignDTO;
 use App\Core\Domain\Repositories\CampaignRepositoryInterface;
+use App\Http\Requests\V1\Campaign\StartCampaignRequest;
 use App\Http\Resources\V1\CampaignResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,16 +38,9 @@ class CampaignController extends Controller
         ]);
     }
 
-    public function start(Request $request): JsonResponse
+    public function start(StartCampaignRequest $request): JsonResponse
     {
-        $request->validate([
-            'machine_id' => 'required|uuid',
-            'article_id' => 'required|uuid',
-            'client_id' => 'required|uuid',
-            'codigo' => 'nullable|string|max:50',
-        ]);
-
-        $data = $request->all();
+        $data = $request->validated();
         $data['company_id'] = $this->activeCompanyId();
         $data['operator_id'] = $request->user()->id;
 

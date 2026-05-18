@@ -8,6 +8,9 @@ use Illuminate\Http\JsonResponse;
 use App\Core\Application\UseCases\UserAlias\SearchAliasByLegajo;
 use App\Core\Application\UseCases\UserAlias\CreateUserAlias;
 use App\Core\Application\UseCases\UserAlias\ToggleUserAliasStatus;
+use App\Http\Requests\V1\UserAlias\SearchUserAliasRequest;
+use App\Http\Requests\V1\UserAlias\ListUserAliasRequest;
+use App\Http\Requests\V1\UserAlias\CreateUserAliasRequest;
 use App\Http\Resources\V1\UserAliasResource;
 use DomainException;
 
@@ -20,11 +23,9 @@ class UserAliasController extends Controller
         private \App\Core\Domain\Repositories\UserAliasRepositoryInterface $repository
     ) {}
 
-    public function search(Request $request): JsonResponse|UserAliasResource
+    public function search(SearchUserAliasRequest $request): JsonResponse|UserAliasResource
     {
-        $validated = $request->validate([
-            'legajo' => 'required|string|max:50'
-        ]);
+        $validated = $request->validated();
 
         $alias = $this->searchAliasByLegajo->execute($validated['legajo']);
 
@@ -43,11 +44,9 @@ class UserAliasController extends Controller
         return new UserAliasResource($alias);
     }
 
-    public function index(Request $request): JsonResponse
+    public function index(ListUserAliasRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'user_id' => 'required|integer|exists:users,id'
-        ]);
+        $validated = $request->validated();
 
         $aliases = $this->repository->findByUser($validated['user_id']);
 
@@ -56,13 +55,9 @@ class UserAliasController extends Controller
         ]);
     }
 
-    public function store(Request $request): JsonResponse|UserAliasResource
+    public function store(CreateUserAliasRequest $request): JsonResponse|UserAliasResource
     {
-        $validated = $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
-            'name' => 'required|string|max:255',
-            'legajo' => 'required|string|max:50|unique:user_aliases,legajo'
-        ]);
+        $validated = $request->validated();
 
         try {
             $alias = $this->createUserAlias->execute(

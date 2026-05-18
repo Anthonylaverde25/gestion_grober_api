@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\V1\Auth\SwitchContextRequest;
 use App\Http\Resources\V1\LoginResource;
 use App\Core\Application\Services\AuthService;
 use App\Core\Application\DTOs\Auth\LoginInputDTO;
@@ -44,11 +45,9 @@ class AuthController extends Controller
         ]);
     }
 
-    public function switchContext(Request $request): JsonResponse
+    public function switchContext(SwitchContextRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'company_id' => 'required|uuid|exists:companies,id'
-        ]);
+        $validated = $request->validated();
 
         try {
             $this->authService->switchContext($request->user(), $validated['company_id']);

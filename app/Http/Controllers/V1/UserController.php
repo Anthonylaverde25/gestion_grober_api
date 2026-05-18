@@ -7,7 +7,7 @@ use App\Core\Application\UseCases\User\GetAllUsers;
 use App\Core\Application\UseCases\User\GetCompanyUsers;
 use App\Core\Application\UseCases\User\CreateUser;
 use App\Http\Resources\V1\UserResource;
-use App\Http\Requests\V1\CreateUserRequest;
+use App\Http\Requests\V1\User\CreateUserRequest;
 use App\Core\Context\TenantContext;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;

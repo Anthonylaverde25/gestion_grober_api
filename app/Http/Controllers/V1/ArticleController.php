@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Core\Application\UseCases\Article\CreateArticleUseCase;
 use App\Core\Application\UseCases\Article\GetArticlesByCompanyUseCase;
 use App\Core\Application\UseCases\Article\DTOs\CreateArticleRequest;
+use App\Http\Requests\V1\Article\CreateArticleRequest as CreateArticleFormRequest;
 use App\Http\Resources\V1\ArticleResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -48,7 +49,7 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(CreateArticleFormRequest $request): JsonResponse
     {
         $companyId = $this->activeCompanyId();
 
@@ -56,10 +57,7 @@ class ArticleController extends Controller
             return response()->json(['message' => 'Active company context is required'], 400);
         }
 
-        $validated = $request->validate([
-            'client_id' => 'nullable|uuid|exists:clients,id',
-            'name' => 'required|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $dto = new CreateArticleRequest(
             $companyId,

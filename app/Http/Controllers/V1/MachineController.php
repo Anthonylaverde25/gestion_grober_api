@@ -11,6 +11,9 @@ use App\Core\Application\UseCases\Machine\ListMachinesByCompany;
 use App\Core\Application\UseCases\Machine\ListMachinesByFurnace;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\MachineResource;
+use App\Http\Requests\V1\Machine\ListMachinesRequest;
+use App\Http\Requests\V1\Machine\CreateMachineRequest;
+use App\Http\Requests\V1\Machine\ChangeMachineArticleRequest;
 use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,28 +28,14 @@ class MachineController extends Controller
         private UpdateMachine $updateMachineUseCase
     ) {}
 
-    public function index(Request $request): JsonResponse
+    public function index(ListMachinesRequest $request): JsonResponse
     {
-        $companyId = $request->query('company_id');
-        $furnaceId = $request->query('furnace_id');
-
-        if (!$companyId && !$furnaceId) {
-            return response()->json([
-                'message' => 'Debe enviar company_id o furnace_id',
-            ], 400);
-        }
+        $companyId = $request->input('company_id');
+        $furnaceId = $request->input('furnace_id');
 
         if ($companyId) {
-            $request->validate([
-                'company_id' => 'required|uuid|exists:companies,id',
-            ]);
-
             $machines = $this->listMachinesByCompanyUseCase->execute($companyId);
         } else {
-            $request->validate([
-                'furnace_id' => 'required|uuid|exists:furnaces,id',
-            ]);
-
             $machines = $this->listMachinesByFurnaceUseCase->execute($furnaceId);
         }
 
@@ -55,17 +44,9 @@ class MachineController extends Controller
         ]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(CreateMachineRequest $request): JsonResponse
     {
-        $request->validate([
-            'company_id' => 'required|uuid|exists:companies,id',
-            'furnace_id' => 'required|uuid|exists:furnaces,id',
-            'current_article_id' => 'nullable|uuid|exists:articles,id',
-            'name' => 'required|string|max:100',
-            'status' => 'nullable|string|in:operational,maintenance,shutdown',
-        ]);
-
-        $dto = CreateMachineDTO::fromRequest($request->all());
+        $dto = CreateMachineDTO::fromRequest($request->validated());
 
         try {
             $machine = $this->createMachineUseCase->execute($dto);
@@ -81,13 +62,9 @@ class MachineController extends Controller
         ], 201);
     }
 
-    public function changeCurrentArticle(Request $request, string $machineId): JsonResponse
+    public function changeCurrentArticle(ChangeMachineArticleRequest $request, string $machineId): JsonResponse
     {
-        $request->validate([
-            'article_id' => 'nullable|uuid|exists:articles,id',
-        ]);
-
-        $dto = ChangeMachineArticleDTO::fromRequest($machineId, $request->all());
+        $dto = ChangeMachineArticleDTO::fromRequest($machineId, $request->validated());
 
         try {
             $machine = $this->changeMachineCurrentArticleUseCase->execute($dto);

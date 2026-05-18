@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Core\Application\UseCases\Extraction\RegisterExtraction;
 use App\Core\Application\UseCases\Extraction\GetMachineExtractionHistory;
 use App\Core\Application\DTOs\Extraction\RegisterExtractionDTO;
+use App\Http\Requests\V1\Extraction\RegisterExtractionRequest;
 use App\Http\Resources\V1\ExtractionResource;
 use DomainException;
 use Illuminate\Http\JsonResponse;
@@ -21,16 +22,11 @@ class ExtractionController extends Controller
     /**
      * Registra una nueva extracción.
      */
-    public function store(Request $request): JsonResponse
+    public function store(RegisterExtractionRequest $request): JsonResponse
     {
-        $request->validate([
-            'machine_id' => 'required|uuid|exists:machines,id',
-            'article_id' => 'required|uuid|exists:articles,id',
-            'percentage' => 'required|numeric|min:0|max:100',
-            'measured_at' => 'nullable|date',
-        ]);
+        $validated = $request->validated();
 
-        $dto = RegisterExtractionDTO::fromRequest($request->all());
+        $dto = RegisterExtractionDTO::fromRequest($validated);
 
         try {
             $extraction = $this->registerExtractionUseCase->execute($dto);

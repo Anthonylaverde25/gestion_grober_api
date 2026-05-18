@@ -9,6 +9,8 @@ use App\Core\Application\UseCases\LineYield\GetMachineYieldHistory;
 use App\Core\Application\DTOs\LineYield\RecordLineYieldDTO;
 use App\Core\Application\DTOs\LineYield\RecordLineYieldBatchDTO;
 use App\Core\Domain\Repositories\LineYieldRepositoryInterface;
+use App\Http\Requests\V1\LineYield\RecordLineYieldRequest;
+use App\Http\Requests\V1\LineYield\RecordLineYieldBatchRequest;
 use App\Http\Resources\V1\LineYieldResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,18 +26,10 @@ class LineYieldController extends Controller
         private \App\Core\Domain\Repositories\UserAliasRepositoryInterface $userAliasRepository
     ) {}
 
-    public function store(Request $request): JsonResponse
+    public function store(RecordLineYieldRequest $request): JsonResponse
     {
-        $request->validate([
-            'campaign_id' => 'required|uuid',
-            'forming_yield' => 'required|numeric|min:0|max:100',
-            'packing_yield' => 'required|numeric|min:0|max:100',
-            'notes' => 'nullable|string',
-            'user_alias_id' => 'nullable|uuid|exists:user_aliases,id',
-        ]);
-
         try {
-            $data = $request->all();
+            $data = $request->validated();
             $data['company_id'] = $this->activeCompanyId();
 
             if (!$data['company_id']) {
@@ -64,18 +58,8 @@ class LineYieldController extends Controller
         }
     }
 
-    public function storeBatch(Request $request): JsonResponse
+    public function storeBatch(RecordLineYieldBatchRequest $request): JsonResponse
     {
-        $request->validate([
-            'campaign_id' => 'required|uuid',
-            'items' => 'required|array|min:1',
-            'items.*.forming_yield' => 'required|numeric|min:0|max:100',
-            'items.*.packing_yield' => 'required|numeric|min:0|max:100',
-            'items.*.recorded_at' => 'nullable|date',
-            'items.*.notes' => 'nullable|string',
-            'items.*.user_alias_id' => 'nullable|uuid|exists:user_aliases,id',
-        ]);
-
         try {
             $companyId = $this->activeCompanyId();
 
@@ -85,7 +69,7 @@ class LineYieldController extends Controller
                 ], 422);
             }
 
-            $data = $request->all();
+            $data = $request->validated();
             foreach ($data['items'] as $item) {
                 if (!empty($item['user_alias_id'])) {
                     $alias = $this->userAliasRepository->findById($item['user_alias_id']);

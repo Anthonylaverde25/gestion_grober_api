@@ -7,6 +7,7 @@ use App\Core\Application\UseCases\Furnace\UpdateFurnace;
 use App\Core\Application\UseCases\Furnace\CreateFurnace;
 use App\Core\Application\UseCases\Furnace\ListFurnacesByCompany;
 use App\Core\Application\DTOs\Furnace\CreateFurnaceDTO;
+use App\Http\Requests\V1\Furnace\CreateFurnaceRequest;
 use App\Http\Resources\V1\FurnaceResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -34,7 +35,7 @@ class FurnaceController extends Controller
         ]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(CreateFurnaceRequest $request): JsonResponse
     {
         $companyId = $this->activeCompanyId();
 
@@ -42,13 +43,7 @@ class FurnaceController extends Controller
             return response()->json(['message' => 'Active company context is required'], 400);
         }
 
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'glass_type_id' => 'required|integer',
-            'max_capacity_tons' => 'required|numeric|min:0.1'
-        ]);
-
-        $data = $request->all();
+        $data = $request->validated();
         $data['company_id'] = $companyId;
 
         $dto = CreateFurnaceDTO::fromRequest($data);
